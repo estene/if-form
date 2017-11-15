@@ -1,0 +1,86 @@
+<!--
+    Author : Even Stene 2017
+    Custom form wrapper that supports nested component validation
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+
+<dom-module id="if-form">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'if-form',
+
+      properties: {
+      },
+
+      attached: function() {
+        this._nodeObserver = Polymer.dom(this).observeNodes(
+          function(mutations) {
+            for (var i = 0; i < mutations.addedNodes.length; i++) {
+              if (mutations.addedNodes[i].tagName === 'FORM' && !this._alreadyCalledInit) {
+                this._alreadyCalledInit = true;
+                this._form = mutations.addedNodes[i];
+              }
+            }
+          }.bind(this));
+      },
+
+      detached: function() {
+        if (this._nodeObserver) {
+          Polymer.dom(this).unobserveNodes(this._nodeObserver);
+          this._nodeObserver = null;
+        }
+      },
+
+      /**
+       * Validates all the required elements (custom and native) in the form.
+       * @return {boolean} True if all the elements are valid.
+       */
+      validate: function() {
+        if (this._form.getAttribute('novalidate') === '')
+          return true;
+
+        // Start by making the form check the native elements it knows about.
+        var valid = this._form.checkValidity();
+        var elements = this._findElements(this._form);
+
+        // Go through all the elements, and validate the custom ones.
+        for (var el, i = 0; el = elements[i], i < elements.length; i++) {
+          // This is weird to appease the compiler. We assume the custom element
+          // has a validate() method, otherwise we can't check it.
+          var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
+          if (validatable.validate) {
+            valid = !!validatable.validate() && valid;
+          }
+        }
+        return valid;
+      },
+
+      //Recursively find all elements
+      _findElements: function(parent) {
+        var nodes = Polymer.dom(parent).querySelectorAll('*');
+        var elements = [];
+
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes[i];
+          if(!node.disabled) {
+            elements.push(node);
+          }
+          // This element could have a root which could contain more validatable elements.
+          if(node.root) {
+            Array.prototype.push.apply(elements, this._findElements(node.root));
+          }
+        }
+        return elements;
+      },
+    });
+  </script>
+</dom-module>
