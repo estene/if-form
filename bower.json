@@ -1,0 +1,36 @@
+{
+  "name": "if-form",
+  "version": "1.0.0",
+  "description": "Form wrapper that supports nested custom element validation",
+  "private": true,
+  "authors": [
+    "Even Stene @ If"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "ajax"
+  ],
+  "main": "if-form.html",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estene/if-form.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/estene/if-form",
+  "ignore": [],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
+    "iron-image": "PolymerElements/iron-image#1 - 2",
+    "promise-polyfill": "PolymerLabs/promise-polyfill#1 - 2",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "web-component-tester": "^6.0.0"
+  },
+  "resolutions": {
+    "webcomponentsjs": "^1.0.0"
+  }
+}
